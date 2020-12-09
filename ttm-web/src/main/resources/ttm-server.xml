@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:loxia="http://loxia.benjamin.cn/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+	<bean id="zKServerManager" class="com.elsa.ttm.core.manager.ZKServerManager"
+		scope="singleton" init-method="init" destroy-method="close">
+		<property name="zkConfig" ref="zkConfig"></property>
+	</bean>
+
+	<bean id="serverManager" class="com.elsa.ttm.core.manager.ServerManager"
+		scope="singleton">
+		<property name="zKServerManager" ref="zKServerManager"></property>
+		<property name="dbManager" ref="dbManager"></property>
+	</bean>
+
+</beans>

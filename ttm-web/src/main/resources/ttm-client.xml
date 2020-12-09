@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:loxia="http://loxia.benjamin.cn/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+	<bean id="dbUtil" class="com.elsa.ttm.util.DBUtil">
+		<property name="dataSource" ref="masterDataSource" />
+	</bean>
+
+	<bean id="dbManager" class="com.elsa.ttm.manager.DBManager">
+		<property name="dbUtil" ref="dbUtil" />
+	</bean>
+
+	<bean id="zkConfig" class="com.elsa.ttm.domain.ZkConfig">
+		<property name="userName" value="${zk_user_name}"></property>
+		<property name="passWord" value="${zk_pass_word}"></property>
+		<property name="connectString" value="${zk_connect_string}"></property>
+		<property name="sessionTimeout" value="${zk_session_timeout}"></property>
+		<property name="rootPath" value="${zk_root_path}"></property>
+	</bean>
+
+	<bean id="scheduleManager" class="com.elsa.ttm.manager.ScheduleManager">
+		<constructor-arg name="appName" value="ttmServer"></constructor-arg><!-- 
+			必须要有自己的项目名 -->
+	</bean>
+
+	<bean id="zkManager" class="com.elsa.ttm.manager.ZKManager"
+		init-method="init" destroy-method="close">
+		<property name="zkConfig" ref="zkConfig"></property>
+		<property name="clientManager" ref="clientManager"></property>
+		<property name="scheduleManager" ref="scheduleManager"></property>
+	</bean>
+
+	<bean id="clientManager" class="com.elsa.ttm.manager.ClientManager"
+		init-method="init">
+		<property name="scheduleManager" ref="scheduleManager"></property>
+		<property name="zkManager" ref="zkManager"></property>
+		<property name="dbManager" ref="dbManager"></property>
+	</bean>
+
+</beans>

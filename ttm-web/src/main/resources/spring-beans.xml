@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:loxia="http://loxia.benjamin.cn/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+	<context:component-scan
+		base-package="com.elsa.ttm.manager,com.elsa.ttm.core.manager" />
+
+	<bean id="masterDataSource" class="com.mchange.v2.c3p0.MtComboPooledDataSource"
+		destroy-method="close" lazy-init="false"><!-- org.apache.commons.dbcp.BasicDataSource --><!-- com.mchange.v2.c3p0.ComboPooledDataSource -->
+		<!-- <property name="driverClassName" value="${jdbc.driverClassName}" /> 
+			<property name="url" value="${jdbc.url}" /> <property name="username" value="${jdbc.username}" 
+			/> <property name="password" value="${jdbc.password}" /> <property name="initialSize" 
+			value="${jdbc.initialSize}" /> <property name="maxActive" value="${jdbc.maxActive}" 
+			/> <property name="maxWait" value="${jdbc.waittimeout}" /> <property name="poolPreparedStatements" 
+			value="true" /> <property name="validationQuery" value="select 1 " /> -->
+
+		<property name="driverClass" value="${jdbc.driverClassName}"></property>
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.username}"></property>
+		<property name="password">
+			<value><![CDATA[${jdbc.password}]]></value>
+		</property>
+	</bean>
+
+	<bean id="slaveDataSource" class="com.mchange.v2.c3p0.MtComboPooledDataSource"
+		destroy-method="close" lazy-init="false">
+		<!-- <property name="driverClassName" value="${jdbc.driverClassName}" /> 
+			<property name="url" value="${jdbc.slave.url}" /> <property name="username" 
+			value="${jdbc.username}" /> <property name="password" value="${jdbc.password}" 
+			/> <property name="initialSize" value="${jdbc.initialSize}" /> <property 
+			name="maxActive" value="${jdbc.maxActive}" /> <property name="maxWait" value="${jdbc.waittimeout}" 
+			/> <property name="poolPreparedStatements" value="true" /> <property name="validationQuery" 
+			value="select 1 " /> -->
+
+		<property name="driverClass" value="${jdbc.driverClassName}"></property>
+		<property name="jdbcUrl" value="${jdbc.slave.url}"></property>
+		<property name="user" value="${jdbc.username}"></property>
+		<property name="password">
+			<value><![CDATA[${jdbc.password}]]></value>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="com.elsa.ttm.datasource.CustomDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry value-ref="masterDataSource" key="master_data_source"></entry>
+				<entry value-ref="slaveDataSource" key="slave_data_source"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="masterDataSource">
+		</property>
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="com.elsa.ttm.datasource.MeitunDataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="watchMysql" class="com.elsa.ttm.test.MonitorMysqlSlave">
+		<property name="poolStr" value="mtc3p0"></property>
+	</bean>
+	<bean id="t" class="com.elsa.ttm.test.T" init-method="init"></bean>
+
+</beans>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:loxia="http://loxia.benjamin.cn/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+	<bean id="cancleItemManager" class="com.elsa.ttm.quartz.manager.CancleItemManager"></bean>
+	<bean id="cancleItemTaskAO" class="com.elsa.ttm.quartz.ao.CancleItemAO">
+		<property name="cancleItemManager" ref="cancleItemManager"></property>
+	</bean>
+	<bean id="cancleOrderAO" class="com.elsa.ttm.quartz.ao.CancleOrderAO">
+		<property name="cancleItemManager" ref="cancleItemManager"></property>
+	</bean>
+	<bean id="clearTriggerLogAO" class="com.elsa.ttm.quartz.ao.ClearTriggerLogAO">
+		<property name="dbManager" ref="dbManager"></property>
+	</bean>
+
+	<!-- <bean id="test_0001" class="com.elsa.ttm.quartz.util.MethodInvokingJobDetailFactoryBean"> 
+		<property name="targetObject" ref="cancleItemTaskAO" /> <property name="targetMethod" 
+		value="executeTestArgs" /> <property name="cronExpression" value="${quartz.cancelItem.cron}"></property> 
+		<property name="jobDesc" value="${quartz.cancelItem.desc}"></property> <property 
+		name="arguments"> <list> <list> <value>7</value> <value>8</value> <value>9</value> 
+		</list> </list> </property> </bean> -->
+
+	<!-- <bean id="test_0002" class="com.elsa.ttm.schedule.MethodInvokingJobDetailFactoryBean"> 
+		<property name="targetObject" ref="cancleItemTaskAO" /> <property name="targetMethod" 
+		value="executeTest" /> <property name="cronExpression" value="${quartz.cancelItem.cron}"></property> 
+		<property name="jobDesc" value="${quartz.cancelItem.desc}"></property> </bean> -->
+
+	<bean id="clearTriggerLog_schedule"
+		class="com.elsa.ttm.schedule.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="clearTriggerLogAO" />
+		<property name="targetMethod" value="deleteTriggerLog" />
+		<property name="cronExpression" value="${quartz.clearTriggerLog.cron}"></property>
+		<property name="jobDesc" value="${quartz.clearTriggerLog.desc}"></property>
+	</bean>
+
+	<bean id="startSchedule" class="com.elsa.ttm.schedule.StartSchedule">
+		<property name="scheduleManager" ref="scheduleManager"></property>
+	</bean>
+
+</beans>

@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:loxia="http://loxia.benjamin.cn/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+<!-- 	<bean id="jdbc" class="com.elsa.ttm.util.JDBC" lazy-init="false">
+		<property name="dataSource" ref="masterDataSource" />
+		<property name="host" value="${zk.mysql.host}" />
+		<property name="port" value="${zk.mysql.port}" />
+		<property name="dbName" value="${zk.mysql.db_name}" />
+		<property name="userName" value="${zk.mysql.user_name}" />
+		<property name="passWord" value="${zk.mysql.pass_word}" />
+	</bean> -->
+
+<!-- 	<bean id="dbManager" class="com.elsa.ttm.manager.DBManager"
+		lazy-init="false">
+		<property name="jdbc" ref="jdbc" />
+	</bean>
+
+	<bean id="zkConfig" class="com.elsa.ttm.domain.ZkConfig"
+		scope="singleton">
+		<property name="userName" value="${zk_user_name}"></property>
+		<property name="passWord" value="${zk_pass_word}"></property>
+		<property name="connectString" value="${zk_connect_string}"></property>
+		<property name="sessionTimeout" value="${zk_session_timeout}"></property>
+		<property name="rootPath" value="${zk_root_path}"></property>
+	</bean>
+
+	<bean id="scheduleManager" class="com.elsa.ttm.manager.ScheduleManager"
+		scope="singleton">
+		<constructor-arg name="appName" value="saleOrder"></constructor-arg>
+	</bean>
+
+	<bean id="zkManager" class="com.elsa.ttm.manager.ZKManager"
+		scope="singleton" init-method="init" destroy-method="close">
+		<property name="zkConfig" ref="zkConfig"></property>
+		<property name="scheduleManager" ref="scheduleManager"></property>
+	</bean>
+	
+	<bean id="serverZKManager" class="com.elsa.ttm.manager.ServerZKManager"
+		scope="singleton" init-method="init" destroy-method="close">
+		<property name="zkConfig" ref="zkConfig"></property>
+	</bean>
+
+	<bean id="clientManager" class="com.elsa.ttm.manager.ClientManager"
+		scope="singleton" init-method="init">
+		<property name="scheduleManager" ref="scheduleManager"></property>
+		<property name="zkManager" ref="zkManager"></property>
+		<property name="dbManager" ref="dbManager"></property>
+	</bean>
+	
+	<bean id="serverManager" class="com.elsa.ttm.manager.ServerManager"
+		scope="singleton">
+		<property name="serverZKManager" ref="serverZKManager"></property>
+		<property name="dbManager" ref="dbManager"></property>
+	</bean>
+
+	<bean id="cancleItemManager" class="com.elsa.ttm.quartz.manager.CancleItemManager"></bean>
+	<bean id="cancleItemTaskAO" class="com.elsa.ttm.quartz.ao.CancleItemAO">
+		<property name="cancleItemManager" ref="cancleItemManager"></property>
+	</bean>
+	<bean id="cancleOrderAO" class="com.elsa.ttm.quartz.ao.CancleOrderAO">
+		<property name="cancleItemManager" ref="cancleItemManager"></property>
+	</bean> -->
+
+<!-- 	<bean id="test_0001"
+		class="com.elsa.ttm.quartz.util.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="cancleItemTaskAO" />
+		<property name="targetMethod" value="executeTestArgs" />
+		<property name="cronExpression" value="${quartz.cancelItem.cron}"></property>
+		<property name="jobDesc" value="${quartz.cancelItem.desc}"></property>
+		<property name="arguments">
+			<list>
+				<list>
+					<value>7</value>
+					<value>8</value>
+					<value>9</value>
+				</list>
+			</list>
+		</property>
+	</bean> -->
+	
+<!-- 	<bean id="test_0002"
+		class="com.elsa.ttm.quartz.util.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="cancleItemTaskAO" />
+		<property name="targetMethod" value="executeTest" />
+		<property name="cronExpression" value="${quartz.cancelItem.cron}"></property>
+		<property name="jobDesc" value="${quartz.cancelItem.desc}"></property>
+	</bean>
+	
+	<bean id="startSchedule" class="com.elsa.ttm.quartz.util.StartSchedule"></bean> -->
+
+</beans>

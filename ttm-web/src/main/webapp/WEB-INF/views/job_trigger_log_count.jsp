@@ -1,0 +1,1 @@
+${job_trigger_log_count}
